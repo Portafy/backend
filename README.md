@@ -103,5 +103,5 @@ We’re building a tool that:
 
 ## 💬 Want to Contribute / Support?
 
-This is a student-led project being built with love by Bella & Mia — passionate devs from AASTU 💙  
+This is a student-led project being built with love by Bella & Amira — passionate devs from AASTU 💙  
 Stay tuned for our Product Hunt launch and early access!
