@@ -1,10 +1,12 @@
-# Backend/django-env/
+django-env/
 # Ignore Python bytecode files
 *.pyc
 *.pyo
 *.pyd
 __pycache__/
-
+# Ignore virtual environment directories
+# Ignore Django environment directories
+# django-env/
 # Ignore libraries
 *Lib/
 # Ignore compiled files
