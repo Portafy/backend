@@ -10,6 +10,7 @@ from .models import User
 @admin.register(User)
 class UserAdmin(ModelAdmin):
     list_display = [
+        "id",
         "email",
         "username",
         "first_name",
@@ -45,7 +46,7 @@ class UserAdmin(ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         queryset.annotate(_website_count=Count("websites"))
-        return
+        return queryset
 
 
     @admin.display(description="Website Count")
