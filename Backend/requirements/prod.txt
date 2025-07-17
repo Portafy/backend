@@ -1,0 +1,4 @@
+# Include base requirements
+-r base.txt
+
+# No dev or debugging tools!
