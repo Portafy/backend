@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-qxm$!_4v-vwb)&2cu+fd-*z+c$*_k&p_0ch&mflfv(z7*0#l=v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,20 +43,18 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework",
     "django_filters",
-    "django_cors_headers",
-    "django-debug-toolbar",
+    "debug_toolbar",
     "accounts.apps.AccountsConfig",  # Your custom app for user accounts
-    # "pdfs",  # Your custom app for handling PDFs
+    "pdfs.apps.PdfsConfig",  # Your custom app for handling PDFs
     "core.apps.CoreConfig",  # Core app for shared functionality
     "websites.apps.WebsitesConfig",  # Your custom app for handling websites
     "payments.apps.PaymentsConfig",  # Your custom app for handling payments
-
 ]
-# JWT settings
 
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -71,7 +69,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-ROOT_URLCONF = "Portafy.urls"
+ROOT_URLCONF = "config.urls"
 
 
 REST_FRAMEWORK = {
@@ -85,6 +83,7 @@ REST_FRAMEWORK = {
 }
 
 
+# JWT settings
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
@@ -109,7 +108,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Portafy.wsgi.application"
+
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
+
 
 
 # Database
@@ -119,11 +121,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "portafy_db",
-        "USER": "portafy_user",
+        "USER": "root",
         "PASSWORD": "pass123",
         "HOST": "localhost",
-        "PORT": "5432",
-        
+        "PORT": "5432",   
     }
 }
 
@@ -171,9 +172,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Static files (e.g. CSS/JS if you use it)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -6,7 +6,13 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Portafy.settings")
+    # Set the default settings module for the 'asgi' command.
+    # This allows the application to use the correct settings based on the environment.
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE",
+        os.getenv("DJANGO_ENV", "config.settings.dev")
+    )
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
