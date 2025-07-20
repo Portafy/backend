@@ -17,7 +17,7 @@ from ..serializers import UserSerializer
 
 class LoginView(TokenObtainPairView):
     """
-    View to handle user registration.
+    View to handle user login.
     """
     permission_classes = [AllowAny]
     
