@@ -25,3 +25,25 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the User model with additional profile information.
+    """
+
+    website_count = serializers.SerializerMethodField(read_only = True)
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ["website_count"]
+        # extra_kwargs = {
+        #     **UserSerializer().get_extra_kwargs(),
+        #     "website_count": {"read_only" : True},
+        # }
+
+    def get_website_count(self, obj):
+        return obj.websites.count()
+
+
+    # what other things should i return in the profile serializer
+    
