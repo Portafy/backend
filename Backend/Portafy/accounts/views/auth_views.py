@@ -75,13 +75,14 @@ class LogoutView(TokenRefreshView):
     This view invalidates the user's refresh token.
     """
     permission_classes = [AllowAny]
+    logger = logging.getLogger(__name__)
 
     def post(self, request, *args, **kwargs) -> Response:
         try:
             refresh_token = request.data.get("refresh")
             token = RefreshToken(refresh_token)
             token.blacklist()
-            print("Token blacklisted successfully.")
+            self.logger.info("Token blacklisted successfully.")
             return Response(
                 {"message": "Successfully logged out."},
                 status=status.HTTP_205_RESET_CONTENT,
