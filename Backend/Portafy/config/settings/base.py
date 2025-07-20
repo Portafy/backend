@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
     "django_filters",
     "debug_toolbar",
@@ -89,6 +90,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("JWT",),
+    "TOKEN_BLACKLIST_ENABLED": True,
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
 }
 
 
