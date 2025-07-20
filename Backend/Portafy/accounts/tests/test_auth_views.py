@@ -25,7 +25,7 @@ class AuthViewsTestCase(APITestCase):
         self.access_token = response.data["access"]
         
     def test_register_user(self):
-        # already regigstered in setup, just verify
+        # already registered in setup, just verify
         user = User.objects.get(email=self.user_data["email"])
         self.assertEqual(user.first_name, "Bella")
         self.assertTrue(user.check_password(self.user_data["password"]))
