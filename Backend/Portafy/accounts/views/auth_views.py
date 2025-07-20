@@ -68,6 +68,7 @@ class LogoutView(TokenRefreshView):
     """
 
     permission_classes = [AllowAny]
+    logger = logging.getLogger(__name__)
 
     def post(self, request, *args, **kwargs) -> Response:
         refresh_token = request.data.get("refresh")
