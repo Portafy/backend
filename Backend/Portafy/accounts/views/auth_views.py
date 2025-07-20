@@ -26,8 +26,8 @@ class LoginView(TokenObtainPairView):
 
         try:
             serializer.is_valid(raise_exception=True)
-            user_instance = User.objects.get(email = request.data.get("email"))
-            user_data = UserSerializer(user_instance, context = {"request" : request}).data
+            user_instance = User.objects.get(email=request.data.get("email"))
+            user_data = UserSerializer(user_instance, context={"request": request}).data
         except TokenError as e:
             raise InvalidToken(e.args[0])
         
