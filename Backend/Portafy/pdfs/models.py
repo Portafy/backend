@@ -8,7 +8,7 @@ class UploadedFile(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"Uploaded File by {self.user.email}"
+        return f"File: {self.filename} -- by -- user-{self.user_id}"
 
     class Meta:
         ordering = ['-uploaded_at']
