@@ -3,6 +3,7 @@ from accounts.models import User
 from pdfs.models import UploadedFile
 from rest_framework.exceptions import ValidationError
 
+
 class Website(models.Model):
     class THEMES_CHOICES(models.TextChoices):
         DARK = "dark", "Dark"
@@ -26,18 +27,19 @@ class Website(models.Model):
     has_paid_download = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
     # to ensure that the user associated with the uploaded file is the same as the user of the website
     def clean(self):
         if self.file.user != self.user:
-            raise ValidationError("User mismatch: UploadedFile.user must match Website.user")
+            raise ValidationError(
+                "User mismatch: UploadedFile.user must match Website.user"
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
-        
+
     def __str__(self):
-        return f"Website: {self.title} by {self.user.email}"
+        return f"Website: {self.title} by {self.user_id}"
 
     class Meta:
         ordering = ["-created_at"]

@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href= {% static "css/style.css" %}>
+    </head>
+    <body class="{{theme}}">
+        <h1> {% if theme %}
+                {{ theme|capfirst}}
+            {% else %}
+                {{"I love you"}}
+            {% endif %}
+        </h1>
+        <p>{{content.message}}</p>
+
+        {% if content.video %}
+            <video src="{{content.video}}" controls>
+                This broswer doesn't support video
+            </video>
+        {% endif %}
+    </body>
+</html>
