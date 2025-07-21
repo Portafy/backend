@@ -17,6 +17,8 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from config import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -24,5 +26,7 @@ urlpatterns = [
     path("pdfs/", include("pdfs.urls")),  # Include URLs from the PDFs app
     path("websites/", include("websites.urls")),  # Include URLs from the websites app
     path("payments/", include("payments.urls")),  # Include URLs from the payments app
-    path("api-auth/", include("rest_framework.urls")),  # Include DRF authentication URLs
-]
+] 
+
+# for serving the uploaded files in the media folder 
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
