@@ -16,7 +16,7 @@ class WebContentSerializer(serializers.Serializer):
         if video_path:
             main_path = get_main_path(self.context["request"])
             full_path = f"{main_path}/media/{video_path}"
-            return full_path
+            retu rn full_path
         return ""
 
 
@@ -32,11 +32,11 @@ class WebsiteSerializer(serializers.ModelSerializer):
             "slug",
             "theme",
             "type",
-            "content",
             "user",
             "file",
             "has_paid_download",
             "created_at",
+            "content",
         ]
         read_only_fields = ["id", "slug", "created_at"]
 
