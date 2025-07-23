@@ -1,46 +1,28 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import Website, Video
+from .models import Website
 
-# Register your models here.
+
 @admin.register(Website)
 class WebsiteAdmin(ModelAdmin):
-    list_display = ["user", "title", "slug", "theme", "type", "created_at"]
-    search_fields = ["title", "user__username", "user__email", "slug"]
-    list_filter = ["theme", "type", "created_at"]
+    list_display = ["user", "file", "title", "_url", "_theme", "template_type", "created_at"]
+    search_fields = ["title", "user__username", "user__email", "url"]
+    list_filter = ["theme__theme", "theme__template_type", "created_at"]
     ordering = ["-created_at"]
 
-    def has_add_permission(self, request):
-        return True
-
-
-@admin.register(Video)
-class VideoAdmin(ModelAdmin):
-    list_display = ["title", "user", "website", "web_link", "uploaded_at"]
-    search_fields = [
-        "title",
-        "website__title",
-        "website__slug",
-        "website__user__username",
-        "website__user__email",
-    ]
-    list_filter = ["uploaded_at"]
-    ordering = ["-uploaded_at"]
-
-    def has_add_permission(self, request):
-        return False
-    
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related('website', 'website__user')
-        return queryset
-
-
-    @admin.display(description='User')
-    def user(self, obj):
-        return obj.website.user
-
-    @admin.display(description='Website Link')
-    def web_link(self, obj):
-        return obj.website.slug
+        return queryset.select_related("user", "theme")
+    
+    @admin.display(description="Theme")
+    def _theme(self, obj):
+        return obj.theme.theme if obj.theme else "No Theme"
+    
+    @admin.display(description="Template Type")
+    def template_type(self, obj):
+        return obj.theme.template_type if obj.theme else "No Template Type"
+    
+    @admin.display(description="URL")
+    def _url(self, obj):
+        return obj.get_absolute_url()
