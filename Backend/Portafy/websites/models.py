@@ -3,6 +3,7 @@ from accounts.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 from pdfs.models import UploadedFile
 
@@ -44,6 +45,11 @@ class ThemeConfig(models.Model):
 
     def __str__(self):
         return f"Theme Config: {self.theme} - {self.template_type}"
+
+    def delete(self, *args, **kwargs):
+        if self.websites.exists():
+            raise ValidationError("Cannot delete ThemeConfig while it is assigned to a Website.")
+        super().delete(*args, **kwargs)
 
 
     

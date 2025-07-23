@@ -8,6 +8,12 @@ from .serializers import SimpleWebsiteSerializer, FullWebsiteSerializer
 
 
 class WebsiteViewSet(ModelViewSet):
+    """
+    ViewSet for managing Website instances.
+    Provides list, create, retrieve, update, and delete actions.
+    Uses different serializers for read and write operations.
+    Permissions: Only owners or admins can modify, others have read-only access.
+    """
     queryset = Website.objects.all()
     serializer_class = SimpleWebsiteSerializer
     permission_classes = [IsOwnerOrAdminOrReadOnly]
