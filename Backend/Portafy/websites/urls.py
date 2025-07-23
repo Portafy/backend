@@ -8,5 +8,5 @@ router.register("", views.WebsiteViewSet, basename="websites")
 app_name = "websites"
 urlpatterns = [
         path("",include(router.urls)),
-        path("live/<slug:url>", views.LiveSiteView.as_view(), name = "live-site")
+        path("live/<slug:url>/", views.LiveSiteView.as_view(), name = "live_site")
 ]
