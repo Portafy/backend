@@ -1,3 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from . import views
 
-urlpatterns = []
+router = DefaultRouter()
+router.register("", views.WebsiteViewSet, basename="websites")
+
+app_name = "websites"
+urlpatterns = [
+        path("",include(router.urls)),
+        path("live/<slug:url>/", views.LiveSiteView.as_view(), name = "live_site")
+]

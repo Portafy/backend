@@ -1,9 +1,11 @@
-from django.urls import path
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
+router = DefaultRouter()
+router.register("", views.FileViewSet, basename="files")
+
 urlpatterns = [
-    path("", views.FileListView.as_view(), name="pdfs"),
-    path("upload-pdf/", views.FileUploadView.as_view(), name="upload-pdf"),
-    path("<int:pk>/", views.FileDetailView.as_view(), name="pdf-detail"),
+    path("", include(router.urls)),
+    path("extract/<int:pk>/", views.FileExtractView.as_view(), name="file-extract"),
 ]

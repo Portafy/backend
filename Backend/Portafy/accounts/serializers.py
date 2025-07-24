@@ -32,7 +32,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     Serializer for the User model with additional profile information.
     """
 
-    website_count = serializers.SerializerMethodField(read_only = True)
+    # The website_count field returns the number of websites associated with the user.
+    website_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ["website_count"]
