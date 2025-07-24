@@ -30,7 +30,7 @@ def gemini_api(message: str) -> str:
 
         genai.configure(api_key=config("GEMINI_API_KEY"))
 
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-1.5-flash-002")
         response = model.generate_content(message)
         return response.text if response.text else "No response from Gemini API"
     
