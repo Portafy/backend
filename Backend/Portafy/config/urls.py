@@ -30,7 +30,6 @@ app_name = "config"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("core.urls"), name="core"),  # Include URLs from the core app
     path("accounts/", include("accounts.urls"), name = "accounts"),  # Include URLs from the accounts app
     path("pdfs/", include("pdfs.urls"), name = "pdfs"),  # Include URLs from the PDFs app
     path("websites/", include("websites.urls"), name = "websites"),  # Include URLs from the websites app

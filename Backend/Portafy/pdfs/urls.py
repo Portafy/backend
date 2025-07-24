@@ -5,4 +5,7 @@ from . import views
 router = DefaultRouter()
 router.register("", views.FileViewSet, basename="files")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("extract/<int:pk>/", views.FileExtractView.as_view(), name="file-extract"),
+]
