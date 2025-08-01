@@ -3,7 +3,7 @@ from django.contrib.admin import ModelAdmin
 
 from django.db.models import Count
 
-from .models import User
+from .models import User, Customer
 
 
 # Register your models here.
@@ -18,7 +18,6 @@ class UserAdmin(ModelAdmin):
         "phone",
         "is_staff",
         "is_active",
-        "website_count",
     ]
     search_fields = ["email", "username", "first_name", "last_name"]
     list_filter = []
@@ -43,11 +42,16 @@ class UserAdmin(ModelAdmin):
         ),
     ]
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        queryset.annotate(_website_count=Count("websites"))
-        return queryset
 
+@admin.register(Customer)
+class CustomerAdmin(ModelAdmin):
+    list_display = ["user", "subscription"]
+    list_filter = ["subscription"]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request).select_related("user")
+        queryset = queryset.annotate(_website_count=Count("user__websites"))
+        return queryset
 
     @admin.display(description="Website Count")
     def website_count(self, obj):
