@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from .models import Website, WebsiteContent, ThemeConfig
+from .models import ThemeConfig, Website, WebsiteContent
 
 class WebsiteContentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,58 +11,63 @@ class WebsiteContentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "content": {"required": True},
         }
-        
-        
+
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
         return super().create(validated_data)
 
+
 class ThemeConfigSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThemeConfig
-        fields = ["id", "user", "name", "theme", "template_type", "config", "created_at"]
+        fields = [
+            "id",
+            "user",
+            "name",
+            "theme",
+            "template_type",
+            "config",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
-        extra_kwargs = {
-            "user" : {"required" : False}
-        }
+        extra_kwargs = {"user": {"required": False}}
+
 
 class SimpleWebsiteSerializer(serializers.ModelSerializer):
-    # content = WebContentSerializer()
-    public_url = serializers.SerializerMethodField()
-
     class Meta:
         model = Website
         fields = [
             "id",
             "title",
-            "url",
+            "slug",
             "user",
             "file",
             "theme",
             "content",
             "created_at",
         ]
-        read_only_fields = ["id", "url", "file", "created_at"]
+        read_only_fields = ["id", "user", "slug", "created_at"]
 
-    def get_public_url(self, obj):
-        request = self.context["request"]
-        if request:
-            full_path = request.build_absolute_uri(obj.get_absolute_url())
-            return full_path
-        return obj.get_absolute_url()
-    
+    def validate_file(self, file):
+        if file.user_id != self.context["request"].user.id:
+            raise ValidationError("you can not use pdfs uploaded by others")
+        return super().validate(file)
+
+    def validate_content(self, content):
+        if content.user_id != self.context["request"].user.id:
+            raise ValidationError("you can not use contents uploaded by others")
+        return super().validate(content)
+
     def create(self, validated_data):
         request = self.context["request"]
         validated_data["user"] = request.user
+
         return super().create(validated_data)
 
 
-
-
 class FullWebsiteSerializer(SimpleWebsiteSerializer):
-    theme_config = ThemeConfigSerializer(required=False)
-    content = WebsiteContentSerializer(required=True)
+    content = WebsiteContentSerializer(read_only=True)
+    theme = ThemeConfigSerializer(read_only=True)
 
     class Meta(SimpleWebsiteSerializer.Meta):
-        fields = SimpleWebsiteSerializer.Meta.fields + ["content", "theme_config"]
-
+        fields = SimpleWebsiteSerializer.Meta.fields

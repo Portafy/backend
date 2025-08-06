@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from accounts.models import User
-from validators import validate_file_size
+from .validators import validate_file_size
 
 
 class UploadedFile(models.Model):
@@ -19,8 +19,6 @@ class UploadedFile(models.Model):
             validate_file_size,
         ],
     )
-    # run migration for this field
-    # to add it to the database
     content = models.JSONField(null=True, blank=True)
     filename = models.CharField(max_length=250)
     uploaded_at = models.DateTimeField(auto_now_add=True, db_index=True)
