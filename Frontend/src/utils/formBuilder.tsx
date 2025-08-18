@@ -1,14 +1,10 @@
-import type { Field, Group, ArrayGroup, FormGroupType } from "./types";
+import type { Field, Group, ArrayGroup, FormGroupType } from "./form/types";
 
 // --------------------
 // Utility functions
 // --------------------
 
-export const toTitleCase = (str: string) => {
-    return str
-        .replace(/_/g, " ")
-        .replace(/\b\w/g, (char) => char.toUpperCase());
-};
+import { toTitleCase } from "./form/parser";
 
 const defineType = (field: string): Field["type"] => {
     if (field.endsWith("date")) return "date";
@@ -58,11 +54,9 @@ export const flattenFields = (groups: FormGroupType[]) => {
     return result;
 };
 
-
 // --------------------
 // Group builders
 // --------------------
-
 
 export const stringGroup = (key: string, value: string): Group => {
     return {
@@ -107,15 +101,13 @@ export const arrayGroup = (
         fields: values.map((value, index) =>
             objectGroup(`${key}_${index + 1}`, value, "multiple")
         ),
-        structure : {key, value: values[0]}
+        structure: { key, value: values[0] }
     };
 };
-
 
 // --------------------
 // Main builder
 // --------------------
-
 
 export const buildFormGroups = (json: Record<string, any>): FormGroupType[] => {
     const groups: FormGroupType[] = [];

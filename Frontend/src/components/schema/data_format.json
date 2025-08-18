@@ -6,14 +6,12 @@
         "profile_picture_url": "",
         "bio": ""
     },
-
     "has_contact": false,
     "contacts": {
         "email": "",
         "phone": "",
         "location": ""
     },
-
     "has_links": false,
     "links": {
         "linkedin": "",
@@ -21,10 +19,8 @@
         "twitter": "",
         "website": ""
     },
-
     "has_summary": false,
     "summary": "",
-
     "has_experience": false,
     "experience": [
         {
@@ -36,7 +32,6 @@
             "responsibilities": [""]
         }
     ],
-
     "has_education": false,
     "education": [
         {
@@ -48,30 +43,27 @@
             "description": ""
         }
     ],
-
     "has_skills": false,
     "skills": {
-        "programming language": [""],
-        "framework": [""],
-        "database": [""],
-        "cloud": [""],
-        "tool": [""],
-        "soft skill": [""]
+        "programming_languages": [""],
+        "frameworks": ["", ""],
+        "databases": [""],
+        "clouds": [""],
+        "tools": [""],
+        "soft_skills": [""]
     },
-
     "has_projects": false,
     "projects": [
         {
             "title": "",
             "description": "",
-            "technologies": [""],
             "live_demo_url": "",
             "github_url": "",
             "case_study_url": "",
+            "technologies": [""],
             "media": [""]
         }
     ],
-
     "has_awards": false,
     "awards": [
         {
@@ -81,7 +73,6 @@
             "description": ""
         }
     ],
-
     "has_certifications": false,
     "certifications": [
         {
@@ -91,7 +82,6 @@
             "url": ""
         }
     ],
-
     "has_languages": false,
     "languages": [
         {

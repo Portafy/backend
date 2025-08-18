@@ -1,82 +1,96 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { buildFormGroups, flattenFields, objectGroup } from '../utils/formBuilder';
-import type { ArrayGroup, Field, FormDataType, FormGroupType, Group, InputChangeEventType } from '../utils/types';
+import React, { createContext, useContext, useMemo, useState } from 'react'
+import type { FormValueDataType, FormDataType, FormModel, GroupModel, FieldMeta } from '../utils/form/types';
 
-import jsonTemplate from "../utils/data_format.json";
+import { parserSchema } from '../utils/form/parser';
+import { adapterModel } from '../utils/form/adapter';
+import { buildInitialFormData } from '../utils/form/formUtils';
+import schema from "../components/schema/data_format.json"
 
-export const ManualFormContext = createContext({
-    formData: {},
-    setFormData: () => React.useState,
-    formGroupsArray: [],
-    setFormGroupsArray: React.useState,
-    handleAddField: (index: number) => { console.log(index) },
-    handleAddGroup: (index: number, group: ArrayGroup) => { console.log(index, group) },
-    handleChange: (e: InputChangeEventType) => { console.log(e.currentTarget) },
-    populateForm: (jsonFormat: any) => { }
+export interface ManualFormContextType {
+    model: FormModel;
+    formData: FormDataType;
+    setFormData: (updater: (prev: FormDataType) => FormDataType) => void;
+    addGroup: (groupKey: string) => void;
+    updateField: (name: string, value: FormValueDataType) => void;
+    populate: (json: Record<string, any>) => void;
+}
+export const ManualFormContext = createContext<ManualFormContextType | undefined>({
+    model: {} as FormModel,
+    formData: {} as FormDataType,
+    setFormData: () => { },
+    addGroup: () => { },
+    updateField: () => { },
+    populate: () => { }
 });
 
-export interface ManualFormDataTypes {
-    formData: FormDataType;
-    setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
-    formGroupsArray: FormGroupType[];
-    setFormGroupsArray: React.Dispatch<React.SetStateAction<FormGroupType[]>>;
-    handleAddField: (index: number) => void;
-    handleAddGroup: (index: number, group: ArrayGroup) => void;
-    handleChange: (e: InputChangeEventType) => void;
-    populateForm: (jsonFormat: any) => void;
-}
+export const ManualFormContextProvider = ({ children }: { children: React.ReactNode }) => {
+    console.log(parserSchema(schema as any))
+    const baseModel = useMemo(() => adapterModel(parserSchema(schema as any)), []);
+    const [model, setModel] = useState<FormModel>(baseModel);
+    const [formData, setFormDataState] = useState<FormDataType>(() => buildInitialFormData(baseModel));
 
-export const ManualFormContextProvider = ({ children }: { children: React.ReactElement }) => {
-    const [formGroupsArray, setFormGroupsArray] = useState(buildFormGroups(jsonTemplate));
-    const [formData, setFormData] = useState(flattenFields(formGroupsArray));
-
-    const populateForm = (jsonFormat: any) => {
-        const newFormGroupsArray = buildFormGroups(jsonFormat);
-        setFormGroupsArray(newFormGroupsArray);
-        setFormData(flattenFields(newFormGroupsArray))
-    }
-    const handleAddField = (index: number) => {
-        console.log("handled add field", index)
-        // setFormGroupsArray((prev) => {
-        //     const newGroups = [...prev];
-        //     newGroups[index] = {
-        //         ...newGroups[index],
-        //         fields: [...newGroups[index].fields, { id: Date.now(), label: "", value: "" }],
-        //     };
-        //     return newGroups;
-        // });
+    type updaterType = (prev: FormDataType) => FormDataType;
+    const setFormData = (updater: updaterType) => {
+        return setFormDataState(prev => updater(prev));
     }
 
-
-
-    const handleAddGroup = (index: number, parent_group: ArrayGroup) => {
-        if(parent_group.fields.length >= 15) return;
-        
-        const { key, value: structure } = parent_group.structure;
-
-        const subGroup_label = `${key}_${parent_group.fields.length + 1}`;
-        const group: any | Field = objectGroup(subGroup_label, structure, "multiple");
-
-        const newGroups = [...formGroupsArray];
-        if (group.kind == "group") {
-            newGroups[index].fields.push(group)
-        }
-
-        setFormGroupsArray(newGroups);
-    }
-
-    const handleChange = (e: InputChangeEventType) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
+    const updateField = (name: string, value: FormValueDataType) => {
+        setFormDataState((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    const valueObject: any =
-        { formData, setFormData, formGroupsArray, setFormGroupsArray, populateForm, handleAddField, handleAddGroup, handleChange }
+    const addGroup = (groupKey: string) => {
+        const newModel: FormModel = model.map(group => {
+            if (group.key !== groupKey || group.kind !== "array") return group;
 
-    return <ManualFormContext.Provider value={valueObject}>
+            const newItem = createNewSubGroup(group);
+            group.items ? group.items.push(newItem) : group.items = [newItem];
+            return group;
+        })
+
+        console.log(newModel)
+        setModel(newModel);
+    }
+    
+    const populate = (json: Record<string, any>) => {
+        const newModel = adapterModel(parserSchema(json));
+        setModel(newModel);
+        console.log({newModel})
+        setFormData((_) => buildInitialFormData(newModel));
+    }
+
+    return <ManualFormContext.Provider value={{
+        model,
+        formData,
+        setFormData,
+        addGroup,
+        updateField,
+        populate,
+    }}>
         {children}
     </ManualFormContext.Provider>
+}
+
+export const useManualForm = () => {
+    const context = useContext(ManualFormContext);
+    if (!context) throw new Error("useManualForm must be used within a ManualFormContextProvider");
+    return context;
+}
+
+
+// utility functions
+const createNewSubGroup = (group: GroupModel): FieldMeta[] => {
+    const itemsCount = group.items?.length ?? 0;
+
+    const groupStructure = group.fields.map(f => (
+        { ...f, name: f.name.split("_").slice(1).join("_") }
+    ));
+
+    const newItem: FieldMeta[] = groupStructure.map(f => (
+        { ...f, name: `${group.key}_${itemsCount + 1}_${f.name}` }
+    ))
+
+    return newItem;
 }

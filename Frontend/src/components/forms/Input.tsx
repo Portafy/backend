@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
-import { ManualFormContext } from "../../contexts/ManualFormContext";
+import type { InputDataType } from "../../utils/form/types";
+import type { ChangeEvent } from "react";
+import React from "react";
 
 interface Props {
     label: string;
     name: string;
     type?: string;
+    value: InputDataType;
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     className?: string;
     containerClass?: string;
-    value: string;
 }
 
 const ContainerWithLabel = ({
@@ -31,17 +33,15 @@ const ContainerWithLabel = ({
     );
 };
 
-
-
 export const Input = ({
     label,
     name,
     value,
     type = "text",
+    onChange,
     className,
     containerClass,
 }: Props) => {
-    const { handleChange } = useContext(ManualFormContext);
 
     let InputElement = (
         <input
@@ -49,7 +49,7 @@ export const Input = ({
             id={name}
             name={name}
             value={value}
-            onChange={handleChange}
+            onChange={onChange}
             className={`text-sm p-2 placeholder:text-sm placeholder:text-gray-500 rounded outline-2 outline-gray-300 focus:outline-black transition-colors} ${className}`}
         />
     );
@@ -59,7 +59,7 @@ export const Input = ({
                 id={name}
                 name={name}
                 value={value}
-                onChange={handleChange}
+                onChange={onChange}
                 className={`text-sm p-2 resize-none placeholder:text-sm placeholder:text-gray-500 rounded outline-2 outline-gray-300 focus:outline-black transition-colors ${className}`}
             ></textarea>
         );

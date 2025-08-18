@@ -1,0 +1,122 @@
+{
+    "has_personal_info": false,
+    "personal_info": {
+        "full_name": "abel",
+        "title": "software engineer",
+        "profile_picture_url": "",
+        "bio": ""
+    },
+
+    "has_contact": false,
+    "contacts": {
+        "email": "",
+        "phone": "",
+        "location": ""
+    },
+
+    "has_links": false,
+    "links": {
+        "linkedin": "",
+        "github": "",
+        "twitter": "",
+        "website": ""
+    },
+
+    "has_summary": false,
+    "summary": "",
+
+    "has_experience": false,
+    "experience": [
+        {
+            "job_title": "",
+            "company": "",
+            "location": "",
+            "start_date": "",
+            "end_date": "",
+            "responsibilities": [""]
+        },
+        {
+            "job_title": "software developer",
+            "company": "",
+            "location": "",
+            "start_date": "",
+            "end_date": "",
+            "responsibilities": [""]
+        }
+    ],
+
+    "has_education": false,
+    "education": [
+        {
+            "degree": "",
+            "institution": "",
+            "location": "",
+            "start_date": "",
+            "end_date": "",
+            "description": ""
+        }
+    ],
+
+    "has_skills": false,
+    "skills": {
+        "programming language": ["", "", ""],
+        "framework": [""],
+        "database": [""],
+        "cloud": [""],
+        "tool": [""],
+        "soft skill": [""]
+    },
+
+    "has_projects": false,
+    "projects": [
+        {
+            "title": "",
+            "description": "",
+            "technologies": [""],
+            "live_demo_url": "",
+            "github_url": "",
+            "case_study_url": "",
+            "media": ["", ""]
+        }
+    ],
+
+    "has_awards": false,
+    "awards": [
+        {
+            "title": "",
+            "issuer": "",
+            "date": "",
+            "description": ""
+        },
+        {
+            "title": "",
+            "issuer": "",
+            "date": "",
+            "description": ""
+        },
+        {
+            "title": "",
+            "issuer": "",
+            "date": "",
+            "description": ""
+        }
+    ],
+
+    "has_certifications": false,
+    "certifications": [
+        {
+            "title": "",
+            "issuer": "",
+            "date": "",
+            "url": ""
+        }
+    ],
+
+    "has_languages": false,
+    "languages": [
+        {
+            "name": "",
+            "proficiency": ""
+        }
+    ]
+}
