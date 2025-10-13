@@ -1,5 +1,6 @@
 asgiref==3.9.1
 black==25.1.0
+celery==5.4.7
 cfgv==3.4.0
 click==8.2.1
 colorama==0.4.6
@@ -38,3 +39,4 @@ tzdata==2025.2
 uritemplate==4.2.0
 virtualenv==20.31.2
 whitenoise==6.9.0
+requests==2.32.3
