@@ -32,25 +32,41 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Defualt apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "corsheaders",
-    "drf_yasg",
+    
+    # Rest Fromework and related
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
+    
+    # Third-party apps
+    "corsheaders",
+    "drf_yasg",
     "django_filters",
-    "debug_toolbar",
+    
+    # Allauth apps
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    # Providers
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
+    
+    # local apps
+    "core.apps.CoreConfig",  # Core app for shared functionality
     "accounts.apps.AccountsConfig",  # Your custom app for user accounts
     "pdfs.apps.PdfsConfig",  # Your custom app for handling PDFs
-    "core.apps.CoreConfig",  # Core app for shared functionality
     "websites.apps.WebsitesConfig",  # Your custom app for handling websites
     "payments.apps.PaymentsConfig",  # Your custom app for handling payments
 ]
+
 
 
 MIDDLEWARE = [
@@ -61,22 +77,37 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+ROOT_URLCONF = "config.urls"
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 # CORS settings
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Allauth settings
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
-ROOT_URLCONF = "config.urls"
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
+# DRF settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -89,7 +120,6 @@ REST_FRAMEWORK = {
 
 
 # JWT settings
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -98,7 +128,6 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
 }
-
 
 
 TEMPLATES = [
