@@ -1,0 +1,51 @@
+name: Run Tests and Lint
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: portafy_db
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: pass123
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://root:pass123@localhost:5432/portafy_db
+      SECRET_KEY: django-insecure-qxm$!_4v-vwb)&2cu+fd-*z+c$*_k&p_0ch&mflfv(z7*0#l=v
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: Backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r  requirements/dev.txt
+
+      - name: Run migrations (for tests that need them)
+        working-directory: Backend/Portafy
+        run: |
+          python manage.py migrate --noinput
+
+      - name: Run Linter
+        working-directory: Backend
+        run: |
+          pip install ruff
+          ruff check .

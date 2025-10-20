@@ -1,0 +1,40 @@
+from rest_framework import serializers
+
+from .models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the User model.
+    This serializer handles user creation and validation.
+    """
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+        ]
+        read_only_fields = ["id",]
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the User model with additional profile information.
+    """
+
+    # The website_count field returns the number of websites associated with the user.
+    website_count = serializers.SerializerMethodField(read_only=True)
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ["website_count"]
+
+    def get_website_count(self, obj):
+        return obj.websites.count()
