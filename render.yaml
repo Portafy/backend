@@ -1,0 +1,112 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: portafy-db
+    env: postgres
+    plan: starter
+    # Render will automatically set DATABASE_URL
+    disk:
+      name: portafy-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+
+  # Redis for Celery
+  - type: pserv
+    name: portafy-redis
+    env: redis
+    plan: starter
+    # Render will automatically set REDIS_URL
+
+  # Celery Worker Service
+  - type: worker
+    name: portafy-worker
+    env: python
+    plan: starter
+    buildCommand: |
+      cd Backend && pip install -r requirements/prod.txt
+    startCommand: |
+      cd Backend/Portafy && celery -A config worker --loglevel=info --concurrency=2 --max-tasks-per-child=100
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      # Redis will be auto-populated by Render from portafy-redis service
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: portafy-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: portafy-redis
+          property: connectionString
+
+  # Django Web Application
+  - type: web
+    name: portafy-web
+    env: python
+    plan: starter
+    buildCommand: |
+      cd Backend && pip install -r requirements/prod.txt
+    startCommand: |
+      cd Backend/Portafy && python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --worker-class gevent --max-requests 1000 --max-requests-jitter 50 --keep-alive 5 --log-level info
+    autoDeploy: false
+    healthCheckPath: /admin/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: DEBUG
+        value: false
+      # Database will be auto-populated by Render from portafy-db service
+      # Redis will be auto-populated by Render from portafy-redis service
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: FRONTEND_URL
+        value: https://your-frontend-domain.onrender.com
+      - key: FRONTEND_PASSWORD_RESET_URL
+        value: https://your-frontend-domain.onrender.com/reset_password
+      - key: DEFAULT_FROM_EMAIL
+        value: noreply@yourdomain.com
+      # Payment gateway keys (set these in Render dashboard)
+      - key: CHAPA_SECRET_KEY
+        sync: false
+      - key: CHAPA_PUBLIC_KEY
+        sync: false
+      - key: SITE_ID
+        value: 1
+      # Celery configuration (uses Redis from portafy-redis service)
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: portafy-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: portafy-redis
+          property: connectionString
+      - key: CELERY_ACCEPT_CONTENT
+        value: '["json"]'
+      - key: CELERY_TASK_SERIALIZER
+        value: json
+      - key: CELERY_RESULT_SERIALIZER
+        value: json
+      - key: CELERY_TIMEZONE
+        value: UTC
+      # Static files configuration
+      - key: WHITENOISE_USE_FINDERS
+        value: true
+      - key: WHITENOISE_AUTOREFRESH
+        value: true
+
+# Environment variables that should be set in Render dashboard:
+# - CHAPA_SECRET_KEY: Your Chapa secret key
+# - CHAPA_PUBLIC_KEY: Your Chapa public key
+# - FRONTEND_URL: Your frontend application URL
+# - DEFAULT_FROM_EMAIL: Email for notifications
