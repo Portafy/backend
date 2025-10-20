@@ -18,10 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone",
-            "password",
         ]
-        # The password field is write-only to ensure security.
-        extra_kwargs = {"password": {"write_only": True}}
+        read_only_fields = ["id",]
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
@@ -37,14 +35,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ["website_count"]
-        # extra_kwargs = {
-        #     **UserSerializer().get_extra_kwargs(),
-        #     "website_count": {"read_only" : True},
-        # }
 
     def get_website_count(self, obj):
         return obj.websites.count()
-
-
-    # what other things should i return in the profile serializer
-    

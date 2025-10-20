@@ -20,3 +20,5 @@ media/
 static/
 
 .env
+
+*try*

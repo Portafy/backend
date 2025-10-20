@@ -13,7 +13,6 @@ def process_pdf(pdf_path):
         if not pdf_text:
             raise ValidationError("No text found in the PDF.")
 
-
         pdf_text = pdf_text.replace("\n", " ").strip()
         response = gemini_api(PROMPT.replace("{pdf text here}", pdf_text))
         if not response:
