@@ -21,7 +21,7 @@ class WebsiteContent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def __str__(self):
-        return f"Content: by {self.user_id} at {self.created_at}"
+        return f"Content: by {self.user} at {self.created_at}"
 
 
 class ThemeConfig(models.Model):
@@ -59,15 +59,16 @@ class ThemeConfig(models.Model):
     config = models.JSONField(default=dict)  # Store theme-specific configurations
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
-    def __str__(self):
-        return f"Theme Config: {self.theme} - {self.template_type}"
-
     def delete(self, *args, **kwargs):
         if self.websites.exists():
             raise ValidationError(
                 "Cannot delete ThemeConfig while it is assigned to a Website."
             )
         super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return f"Theme Config: {self.theme} - {self.template_type}"
+
 
 
 class WebsiteManager(models.Manager):
@@ -123,4 +124,4 @@ class Website(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Website: {self.title} by {self.user_id}"
+        return f"Website: {self.title} by {self.user}"
