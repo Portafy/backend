@@ -34,3 +34,14 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "portafy_db",
+        "USER": "root",
+        "PASSWORD": "pass123",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}

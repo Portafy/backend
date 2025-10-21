@@ -138,16 +138,6 @@ SIMPLE_JWT = {
 # ------------------------------
 # Database
 # ------------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "portafy_db",
-        "USER": "root",
-        "PASSWORD": "pass123",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
 
 
 # ------------------------------

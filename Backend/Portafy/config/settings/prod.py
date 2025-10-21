@@ -1,6 +1,8 @@
+import environ
 from Backend.Portafy.config.settings.dev import FRONTEND_DOMAIN
 from .base import *
 import os
+
 
 DEBUG = False
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
@@ -26,3 +28,11 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+
+env = environ.Env()
+env.read_env()
+
+DATABASES = {
+    'default': env.db('DATABASE_URL')
+}
