@@ -1,21 +1,86 @@
 # Deployment Guide for Portafy
 
-This guide explains how to deploy the Portafy Django application to Render.com using the provided `render.yaml` configuration.
+This guide explains how to deploy the Portafy Django application to Render.com or Railway using Docker containers and the provided configuration files.
 
 ## Prerequisites
 
 1. A Render.com account
 2. Git repository connected to Render
 3. Chapa payment gateway account (for payment functionality)
+4. Docker (for local development)
+
+## Docker Configuration
+
+The application is fully containerized using Docker for easy deployment and development.
+
+### Files:
+- **`Dockerfile`** - Main Django application container
+- **`Dockerfile.worker`** - Celery worker container
+- **`docker-compose.yml`** - Local development environment
+- **`.dockerignore`** - Optimizes Docker build process
+
+### Benefits of Docker:
+- **Consistent deployment** across all environments
+- **Isolated dependencies** - no conflicts
+- **Easy local development** with docker-compose
+- **Security** - non-root containers
+- **Optimized builds** with layer caching
 
 ## Services Overview
 
-The `render.yaml` file sets up four services:
+The `render.yaml` file sets up four services (all on **free tier**):
 
 1. **PostgreSQL Database** (`portafy-db`) - Stores application data
 2. **Redis** (`portafy-redis`) - Message broker for Celery and caching
 3. **Celery Worker** (`portafy-worker`) - Processes background tasks (PDF conversion, website generation)
 4. **Web Application** (`portafy-web`) - Runs the Django application
+
+### Free Tier Specifications:
+- **Web Service**: 512MB RAM, shared CPU
+- **Worker Service**: 512MB RAM, shared CPU
+- **PostgreSQL**: 1GB storage, shared infrastructure
+- **Redis**: 25MB storage, shared infrastructure
+
+### Free Tier Limitations:
+- **Cold starts**: Services may sleep after inactivity and take time to wake up
+- **Resource limits**: Limited CPU and memory may cause slower performance
+- **Concurrent connections**: Limited database connections
+- **Build time**: Free tier builds may be queued behind paid users
+- **Background tasks**: Celery worker may be slower with limited resources
+
+### Performance Optimization Tips:
+- **Reduce worker processes**: Using `--concurrency=1` for Celery worker
+- **Optimize Gunicorn**: Using `--workers=2` and `sync` worker class
+- **Database pooling**: Configure minimal database connections in Django
+- **Task batching**: Process multiple small tasks together when possible
+- **Caching**: Use Redis for caching to reduce database load
+
+## Local Development with Docker
+
+### Quick Start:
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f web
+
+# Run migrations
+docker-compose exec web python Backend/Portafy/manage.py migrate
+
+# Create superuser
+docker-compose exec web python Backend/Portafy/manage.py createsuperuser
+
+# Stop all services
+docker-compose down
+```
+
+### Services:
+- **Web**: Django development server on http://localhost:8000
+- **Database**: PostgreSQL on localhost:5432
+- **Redis**: Redis on localhost:6379
+- **Worker**: Celery worker for background tasks
+- **Beat**: Celery beat for scheduled tasks
 
 ## Deployment Steps
 

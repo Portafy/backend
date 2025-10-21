@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = ["python311", "postgresql", "redis"]
+
+[phases.install]
+cmds = [
+    "cd Backend && pip install -r requirements/prod.txt"
+]
+
+[start]
+cmd = "cd Backend/Portafy && python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --worker-class sync --max-requests 100 --max-requests-jitter 10 --keep-alive 5 --log-level info"
+
+[env]
+DJANGO_SETTINGS_MODULE = "config.settings.prod"
+DEBUG = "false"
+WHITENOISE_USE_FINDERS = "true"
+WHITENOISE_AUTOREFRESH = "true"
