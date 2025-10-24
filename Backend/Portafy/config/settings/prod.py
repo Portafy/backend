@@ -31,7 +31,7 @@ CELERY_TIMEZONE = 'UTC'
 
 
 env = environ.Env()
-env.read_env()
+environ.Env.read_env()
 
 DATABASES = {
     'default': env.db('DATABASE_URL')
