@@ -1,8 +1,11 @@
 from .base import *
 import os
+import dotenv
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = []
+dotenv.load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 FRONTEND_DOMAIN = os.getenv("FRONTEND_DOMAIN", "http://localhost:3000")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")

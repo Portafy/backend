@@ -2,15 +2,15 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def main():
     """Run administrative tasks."""
-    # Set the default settings module for the 'asgi' command.
-    # This allows the application to use the correct settings based on the environment.
     os.environ.setdefault(
         "DJANGO_SETTINGS_MODULE",
-        os.getenv("DJANGO_ENV", "config.settings.dev")
+        os.getenv("SETTINGS_MODULE", "config.settings.dev")
     )
     
     try:

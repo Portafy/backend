@@ -1,8 +1,10 @@
 import environ
-from Backend.Portafy.config.settings.dev import FRONTEND_DOMAIN
 from .base import *
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 DEBUG = False
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
@@ -12,6 +14,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 REST_AUTH["JWT_AUTH_SECURE"] = True
 
+FRONTEND_DOMAIN = os.getenv("FRONTEND_DOMAIN", "http://localhost:3000")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 FRONTEND_PASSWORD_RESET_URL = os.getenv("FRONTEND_PASSWORD_RESET_URL", "http://localhost:3000/reset_password")
 FRONTEND_PAYMENT_SUCCESS_URL = os.getenv("FRONTEND_PAYMENT_SUCCESS_URL", f"{FRONTEND_DOMAIN}/payment-success")
